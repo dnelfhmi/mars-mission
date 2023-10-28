@@ -8,6 +8,7 @@ package util;
 
 import entities.*;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -23,6 +24,11 @@ public class MainMenu {
     private HabitabilityMeter meter;
 
     //constructor
+
+    /**
+     * Constructor of Main Menu object.
+     * Initialize FileHandler, MarsHabitat and HabitabilityMeter object for usage throughout the class.
+     */
     public MainMenu(){
         scanner = ScannerSingleton.getScannerInstance();
         habitat = new MarsHabitat();
@@ -78,14 +84,23 @@ public class MainMenu {
         List<String> saveMap = habitat.convertToLine();
         try {
             fileHandler.saveFile(saveMap, filename);
-            meter.appendToHabitabilityLog(saveMap);
         } catch (IOException e) {
             System.out.println("Cannot create file for Martian Land Map.");
+        }
+
+        try {
+            fileHandler.appendToHabitabilityLog(meter, fileHandler.getCurrentRunNumberLog());
+        } catch (IOException e) {
+            System.out.println("Cannot write Habitability Status Log in a file.");
         }
         System.out.println("Terminating the mission for now. See you next time.");
     }
 
     //main menu method
+
+    /**
+     * Print main menu selection
+     */
     public void displayMainMenu(){
         System.out.println("Please enter");
         System.out.println("[1] to move Space Robot");
@@ -96,10 +111,14 @@ public class MainMenu {
         System.out.println("[6] to exit");
     }
 
+    /**
+     * Handle user input in main menu selection
+     * @return true if user selection valid, false if otherwise
+     */
     public boolean handleUserMenuInput() {
         System.out.print("> ");
         int choice = scanner.nextInt();
-        System.out.println("MainMenu> "+choice);
+        //System.out.println("MainMenu> "+choice);
         scanner.nextLine();
         switch(choice) {
             case 1:
@@ -115,7 +134,7 @@ public class MainMenu {
                 meter.printEntities();
                 break;
             case 5:
-                habitat.printMarsMap();
+                fileHandler.displayLogFile();
                 break;
             case 6 :case 0:
                 exitProgram();
@@ -127,18 +146,27 @@ public class MainMenu {
         }return true;
     }
 
+    /**
+     * Print file load menu selection
+     */
     public void displayLoadMenu(){
         System.out.println("Please enter");
         System.out.println("[1] to load Martian map from a file");
         System.out.println("[2] to load default Martian map");
     }
 
+    /**
+     * Print Habitability status including entities and score in the habitat
+     */
     protected void displayHabitatScore(){
         meter.calculateHabitabilityScore(fileHandler);
         meter.countEntities(fileHandler);
         meter.printEntities();
     }
 
+    /**
+     * Print robot movement menu
+     */
     public void displayRobotMenu(){
         System.out.println("SpaceRobot can move in following directions");
         System.out.println("[1] to move north.");
@@ -155,6 +183,9 @@ public class MainMenu {
         System.out.print("> ");
     }
 
+    /**
+     * Print robot action menu if left of new robot position is empty
+     */
     private void displayRobotSubMenu(){
         System.out.println("Please select");
         System.out.println("[1] to plant a tree");
@@ -163,6 +194,9 @@ public class MainMenu {
         System.out.print("> ");
     }
 
+    /**
+     * Print robot vegetation planting menu
+     */
     private void displayRobotPlantingMenu(){
         System.out.println("Let's Plant something");
         System.out.println("[1] to plant a potato");
@@ -176,6 +210,9 @@ public class MainMenu {
         System.out.println("[0] to go back to previous menu");
     }
 
+    /**
+     * Print robot cattle rearing menu
+     */
     private void displayRobotCattleMenu(){
         System.out.println("Let's add some cattle");
         System.out.println("[1] to add a goat");
@@ -185,6 +222,9 @@ public class MainMenu {
         System.out.println("[0] to go back to previous menu");
     }
 
+    /**
+     * Print rover movement menu
+     */
     private void displayRoverMenu(){
         System.out.println("SpaceRover can move in following directions");
         System.out.println("[1] to move north.");
@@ -201,6 +241,9 @@ public class MainMenu {
         System.out.print("> ");
     }
 
+    /**
+     * Print Martian animal movement menu
+     */
     private void displayMartianAnimalMenu(){
         System.out.println("MartianAnimal can move in following directions");
         System.out.println("[1] to move north.");
@@ -218,6 +261,10 @@ public class MainMenu {
     }
 
     //main movement method for Movable entities
+    /**
+     * main method to move space robot
+     * Invoke robot selection method and move selected robot
+     */
     private void moveSpaceRobot() {
         SpaceRobot selectedRobot = selectRobotFromList();
         if (selectedRobot == null) {
@@ -227,6 +274,10 @@ public class MainMenu {
         moveEntity(selectedRobot);
     }
 
+    /**
+     * main method to move space rover
+     * Invoke rover selection method and move selected rover
+     */
     private void moveSpaceRover() {
         SpaceRover selectedRover = selectRoverFromList();
         if (selectedRover == null){
@@ -236,6 +287,10 @@ public class MainMenu {
         moveEntity(selectedRover);
     }
 
+    /**
+     * main method to move Martian animal
+     * Invoke Martian animal selection method and move selected Martian animal
+     */
     private void moveMartianAnimal() {
         MartianAnimal selectedMartianAnimal = selectMartianAnimalFromList();
         if (selectedMartianAnimal == null) {
@@ -252,7 +307,6 @@ public class MainMenu {
     }
 
     //selecting Movable entities
-
     /**
      * Method is for selecting a robot from robots in the habitat entity List
      * @return a robot selected by user
@@ -354,7 +408,7 @@ public class MainMenu {
                     System.out.println("Out of bound. Please reselect direction.");
                     System.out.println(e.getMessage());
                 }
-            //SpaceRover movement logic
+                //SpaceRover movement logic
             }else if (entity instanceof SpaceRover) {
                 displayRoverMenu();
                 try {
@@ -366,7 +420,7 @@ public class MainMenu {
                 } catch (Exception e) {
                     System.out.println("Out of bound. Please reselect direction.");
                 }
-            //MartianAnimal movement logic
+                //MartianAnimal movement logic
             } else if (entity instanceof MartianAnimal) {
                 displayMartianAnimalMenu();
                 try {

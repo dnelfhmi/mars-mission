@@ -9,6 +9,11 @@ package util;
 public class InvalidMoveException extends Exception{
 
     //constructor
+
+    /**
+     * Custom exception creation intended for invalid move attempted by entity
+     * @param message custom message
+     */
     public InvalidMoveException(String message) {
         super(message);
     }

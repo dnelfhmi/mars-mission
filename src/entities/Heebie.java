@@ -9,16 +9,19 @@ package entities;
 import util.Movable;
 import util.Collidable;
 import util.Attackable;
+import util.Feedable;
 import util.HabitabilityMeter;
 import util.MarsHabitat;
 import util.ScannerSingleton;
 import java.util.Scanner;
 
-public class Heebie extends MartianAnimal implements Movable, Collidable {
+public class Heebie extends MartianAnimal implements Movable, Collidable, Attackable, Feedable {
 
     //instance fields
     Scanner scanner = ScannerSingleton.getScannerInstance();
-    private static final int MAX_HEALTH = 15;
+    private final int MIN_HEALTH = 0;
+    private final int MAX_HEALTH = 15;
+    private final int INITIAL_POWER = 2;
     private final int STEP_SIZE = 1;
     private final int MIN_X_Y = 0; //map low boundary
     private final int MAX_X; //map high boundary
@@ -27,7 +30,16 @@ public class Heebie extends MartianAnimal implements Movable, Collidable {
     private int prevY;
     private boolean recentlyCollided;
     private int health;
+    private int attackPower;
+
     //constructor
+    /**
+     * Create Heebie, a Martian animal species with its previous and current coordinate,map boundary information and collision flag
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param mapWidth map boundary
+     * @param mapHeight map boundary
+     */
     public Heebie(int x, int y, int mapWidth, int mapHeight) {
 
         super(x, y);
@@ -36,52 +48,122 @@ public class Heebie extends MartianAnimal implements Movable, Collidable {
         this.prevX = x;
         this.prevY = y;
         this.recentlyCollided = false;
+        this.health = MAX_HEALTH;
+        this.attackPower = INITIAL_POWER;
     }
+
     //setter
+    /**
+     * Set previous x-coordinate
+     * @param prevX previous x-coordinate
+     */
     public void setPrevX(int prevX) {
         this.prevX = prevX;
     }
 
+    /**
+     * Set previous y-coordinate
+     * @param prevY previous y-coordinate
+     */
     public void setPrevY(int prevY) {
         this.prevY = prevY;
     }
 
+    /**
+     * Set collision flag
+     * @param recentlyCollided collision flag
+     */
     public void setRecentlyCollided(boolean recentlyCollided) {
         this.recentlyCollided = recentlyCollided;
     }
 
+    /**
+     * Set health
+     * @param health health point
+     */
     public void setHealth(int health) {
         this.health = health;
     }
 
     //getter
+    /**
+     * Retrieve previous x-coordinate
+     * @return previous x-coordinate
+     */
     public int getPrevX() {
         return prevX;
     }
 
+    /**
+     * Retrieve previous y-coordinate
+     * @return previous y-coordinate
+     */
     public int getPrevY() {
         return prevY;
     }
 
+    /**
+     * Retrieve collision flag
+     * @return true if recently collided, false if otherwise
+     */
     public boolean isRecentlyCollided() {
         return recentlyCollided;
     }
 
+    /**
+     * Retrieve current health
+     * @return current health
+     */
     public int getHealth() {
         return health;
     }
 
+    /**
+     * Retrieve char representation
+     * @return char representation
+     */
     @Override
     public char getMapSymbol() {
         return 'H';
     }
 
+    /**
+     * Retrieve char representation
+     * @return char representation
+     */
     @Override
     public char getSymbol() {
         return 'H';
     }
 
+    /**
+     * Retrieve attack power
+     * @return attack power
+     */
+    public int getAttackPower() {return attackPower;}
+
+    /**
+     * Decrease health point by specified amount
+     * @param amount reduction amount
+     */
+    @Override
+    public void decreaseHealth(int amount) {
+        health -= amount;
+    }
+
+    /**
+     * Increase health point by specified amount
+     * @param amount increment amount
+     */
+    public void increaseHealth(int amount){
+        health += amount;
+    }
+
     //printing entity position
+    /**
+     * Print Heebie coordinate in habitat
+     * @return Heebie information in string
+     */
     @Override
     public String toString() {
         return "HEEBIE at position (" + getY() + ", " + getX() + ")";
@@ -111,11 +193,12 @@ public class Heebie extends MartianAnimal implements Movable, Collidable {
      * @param meter reference to the HabitabilityMeter object
      */
     private void handleMovement(int newX, int newY, MarsHabitat habitat, HabitabilityMeter meter) {
-        isCollisionAtPosition(newX, newY, habitat, meter);
-        prevX = x;
-        prevY = y;
-        this.x = newX;
-        this.y = newY;
+        if(!isCollisionAtPosition(newX, newY, habitat, meter)){
+            prevX = x;
+            prevY = y;
+            this.x = newX;
+            this.y = newY;
+        }
     }
 
     /**
@@ -288,7 +371,7 @@ public class Heebie extends MartianAnimal implements Movable, Collidable {
     }
 
     /**
-     * Handles the interaction when the Heebie collides with Cattle.
+     * Handles the interaction when Heebie collides with Cattle.
      *
      * @param cattle The Cattle object that was collided with
      * @param habitat The MarsHabitat representing the environment
@@ -296,12 +379,13 @@ public class Heebie extends MartianAnimal implements Movable, Collidable {
      */
     private void handleCattleInteraction(Cattle cattle, MarsHabitat habitat,HabitabilityMeter meter) {
         System.out.println("The cattle are killed by the martian animals.");
+        increaseHealth(cattle.getNutrition());
         habitat.removeOnMap(cattle.getX(), cattle.getY());
         meter.decreaseHabitabilityEvent(cattle);
     }
 
     /**
-     * Handles the interaction when the Heebie collides with Vegetation.
+     * Handles the interaction when Heebie collides with Vegetation.
      *
      * @param vegetation The Vegetation object that was collided with
      * @param habitat The MarsHabitat representing the environment
@@ -309,12 +393,37 @@ public class Heebie extends MartianAnimal implements Movable, Collidable {
      */
     private void handleVegetationInteraction(Vegetation vegetation, MarsHabitat habitat,HabitabilityMeter meter) {
         System.out.println("The plantation are eaten by the martian animals.");
+        increaseHealth(vegetation.getNutrition());
         habitat.removeOnMap(vegetation.getX(), vegetation.getY());
         meter.decreaseHabitabilityEvent(vegetation);
     }
 
+    /**
+     * Handles the combat when Heebie collides with Dog
+     * @param dog dog stumbled on
+     * @param habitat the habitat where combat takes place
+     * @param meter habitability meter
+     */
     private void handleDogInteraction(Dog dog, MarsHabitat habitat,HabitabilityMeter meter) {
+        System.out.println("Martian animal and Dog has entered a fight");
 
+        while(health >= MIN_HEALTH && dog.getHealth() >= MIN_HEALTH){
+            if (health <= MIN_HEALTH){
+                System.out.println("Martian Animal died");
+                break;
+            }
+            if (dog.getHealth() <= MIN_HEALTH){
+                System.out.println("Dog died");
+                break;
+            }
+            dog.decreaseHealth(attackPower);
+            System.out.println("Martian Animal attacked dog. Health of dog reduced by "+attackPower+", Present Health: "+dog.getHealth());
+            if(dog.getHealth() > MIN_HEALTH){
+                decreaseHealth(dog.getAttackPower());
+                System.out.println("Dog attacked Martian Animal. Martian Animal's health reduced by "+dog.getAttackPower()+", Present Health: "+health);
+            }
+        }
     }
+
 
 }

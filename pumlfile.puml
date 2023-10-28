@@ -1,0 +1,373 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+skinparam dpi 70
+skinparam classAttributeIconSize 0
+
+interface Attackable << interface >> {
+  + decreaseHealth(int): void
+   attackPower: int
+   health: int
+}
+class Cattle {
+  + Cattle(String, int, int): 
+  - nutrition: int
+  + toString(): String
+   symbol: char
+   nutrition: int
+}
+interface Collidable << interface >> {
+  + isCollisionAtPosition(int, int, MarsHabitat, HabitabilityMeter): boolean
+  + onCollide(Entity, MarsHabitat, HabitabilityMeter): void
+   recentlyCollided: boolean
+}
+class Dog {
+  + Dog(String, int, int): 
+  - health: int
+  - attackPower: int
+  + toString(): String
+  + decreaseHealth(int): void
+  + increaseHealth(int): void
+   symbol: char
+   attackPower: int
+   health: int
+}
+class EarthAnimal {
+  + EarthAnimal(String, int, int): 
+  + EarthAnimal(int, int): 
+}
+class Entity {
+  + Entity(String, int, int): 
+  + Entity(int, int): 
+  # x: int
+  # y: int
+  # name: String
+  + toString(): String
+   symbol: char
+   x: int
+   name: String
+   y: int
+}
+interface Feedable << interface >> {
+  + increaseHealth(int): void
+}
+class FileHandler {
+  + FileHandler(): 
+  + FileHandler(String): 
+  - dataLines: List<String>
+  + appendToHabitabilityLog(HabitabilityMeter, int): void
+  # loadLogFile(): List<String>
+  # displayLogFile(): void
+  + saveFile(List<String>, String): void
+  - isValidSymbol(char): boolean
+  + loadFile(): List<String>
+  - validateLine(String, int): void
+   currentRunNumberLog: int
+   dataLines: List<String>
+}
+class HabitabilityMeter {
+  + HabitabilityMeter(): 
+  - entityCount: Map<String, Integer>
+  - habitabilityScore: int
+  + increaseHabitabilityEvent(Entity): boolean
+  + decrementEntityCount(Entity): void
+  + countEntities(FileHandler): Map<String, Integer>
+  + decreaseHabitabilityEvent(Entity): void
+  + addEntity(String): void
+  + increaseHabitability(String): void
+  + printEntities(): void
+  + calculateHabitabilityScore(FileHandler): void
+   habitabilityScore: int
+   entityCount: Map<String, Integer>
+}
+class Heebie {
+  + Heebie(int, int, int, int): 
+  - recentlyCollided: boolean
+  - health: int
+  - attackPower: int
+  - prevY: int
+  - prevX: int
+  + isCollisionAtPosition(int, int, MarsHabitat, HabitabilityMeter): boolean
+  + moveSouthEast(MarsHabitat, HabitabilityMeter): void
+  + isMoveValid(int, int): boolean
+  + onCollide(Entity, MarsHabitat, HabitabilityMeter): void
+  + moveEast(MarsHabitat, HabitabilityMeter): void
+  + moveWest(MarsHabitat, HabitabilityMeter): void
+  + moveNorth(MarsHabitat, HabitabilityMeter): void
+  + moveNorthWest(MarsHabitat, HabitabilityMeter): void
+  + increaseHealth(int): void
+  + moveSouthWest(MarsHabitat, HabitabilityMeter): void
+  + toString(): String
+  + moveNorthEast(MarsHabitat, HabitabilityMeter): void
+  - handleCattleInteraction(Cattle, MarsHabitat, HabitabilityMeter): void
+  - handleVegetationInteraction(Vegetation, MarsHabitat, HabitabilityMeter): void
+  - handleMovement(int, int, MarsHabitat, HabitabilityMeter): void
+  + moveSouth(MarsHabitat, HabitabilityMeter): void
+  - handleDogInteraction(Dog, MarsHabitat, HabitabilityMeter): void
+  + decreaseHealth(int): void
+   symbol: char
+   attackPower: int
+   health: int
+   prevX: int
+   recentlyCollided: boolean
+   mapSymbol: char
+   prevY: int
+}
+class InvalidFileException {
+  + InvalidFileException(String): 
+}
+class Jeebie {
+  + Jeebie(int, int, int, int): 
+  - prevY: int
+  - attackPower: int
+  - prevX: int
+  - recentlyCollided: boolean
+  - health: int
+  + moveWest(MarsHabitat, HabitabilityMeter): void
+  + moveSouth(MarsHabitat, HabitabilityMeter): void
+  - handleDogInteraction(Dog, MarsHabitat, HabitabilityMeter): void
+  + moveSouthEast(MarsHabitat, HabitabilityMeter): void
+  - handleCattleInteraction(Cattle, MarsHabitat, HabitabilityMeter): void
+  - handleMovement(int, int, MarsHabitat, HabitabilityMeter): void
+  - handleVegetationInteraction(Vegetation, MarsHabitat, HabitabilityMeter): void
+  + isMoveValid(int, int): boolean
+  + increaseHealth(int): void
+  + toString(): String
+  + decreaseHealth(int): void
+  + moveEast(MarsHabitat, HabitabilityMeter): void
+  + isCollisionAtPosition(int, int, MarsHabitat, HabitabilityMeter): boolean
+  + moveNorth(MarsHabitat, HabitabilityMeter): void
+  + moveNorthEast(MarsHabitat, HabitabilityMeter): void
+  + onCollide(Entity, MarsHabitat, HabitabilityMeter): void
+  + moveNorthWest(MarsHabitat, HabitabilityMeter): void
+  + moveSouthWest(MarsHabitat, HabitabilityMeter): void
+   symbol: char
+   attackPower: int
+   health: int
+   prevX: int
+   recentlyCollided: boolean
+   mapSymbol: char
+   prevY: int
+}
+class MainMenu {
+  + MainMenu(): 
+  # displayHabitatScore(): void
+  - exitProgram(): void
+  - displayMartianAnimalMenu(): void
+  - moveSpaceRobot(): void
+  - displayRoverMenu(): void
+  + handleUserLoadFileInput(): void
+  - moveMartianAnimal(): void
+  + displayLoadMenu(): void
+  - displayRobotCattleMenu(): void
+  - moveEntity(Movable): void
+  - selectMartianAnimalFromList(): MartianAnimal
+  - selectRobotFromList(): SpaceRobot
+  + displayRobotMenu(): void
+  + displayMainMenu(): void
+  - displayRobotSubMenu(): void
+  - executeEntityMovement(Movable, int): boolean
+  + handleArgumentInput(String[]): void
+  + handleUserMenuInput(): boolean
+  - selectRoverFromList(): SpaceRover
+  - displayRobotPlantingMenu(): void
+  - handleRobotAction(Movable): void
+  - moveSpaceRover(): void
+}
+class MarsHabitat {
+  + MarsHabitat(): 
+  - entity: List<Entity>
+  - marsMap: char[][]
+  # convertToChar(List<String>): void
+  + cattleOnMap(String, int, int): void
+  + isPositionEmpty(int, int): boolean
+  + updateEntityPosition(Movable): void
+  + isLeftOfPositionEmpty(int, int): boolean
+  # processMap(FileHandler): void
+  # parseDataLines(FileHandler): void
+  # listEntity(Class<T>, String): void
+  + getEntityAtPosition(int, int): Entity
+  # convertToLine(): List<String>
+  + removeOnMap(int, int): void
+  + printMarsMap(): void
+  + plantOnMap(String, int, int): void
+  # filterEntities(Class<T>): List<T>
+  # displayDefaultMap(FileHandler): void
+   marsMap: char[][]
+   entity: List<Entity>
+}
+class MarsHabitatApplication {
+  + MarsHabitatApplication(): 
+  - displayMessage(): void
+  - startProgram(String[]): void
+  + main(String[]): void
+}
+class MartianAnimal {
+  + MartianAnimal(int, int): 
+  + MartianAnimal(String, int, int): 
+}
+class Mineral {
+  + Mineral(String, int, int): 
+  + toString(): String
+   symbol: char
+}
+interface Movable << interface >> {
+  + moveSouthWest(MarsHabitat, HabitabilityMeter): void
+  + moveEast(MarsHabitat, HabitabilityMeter): void
+  + moveNorthEast(MarsHabitat, HabitabilityMeter): void
+  + moveSouth(MarsHabitat, HabitabilityMeter): void
+  + moveWest(MarsHabitat, HabitabilityMeter): void
+  + isMoveValid(int, int): boolean
+  + moveNorth(MarsHabitat, HabitabilityMeter): void
+  + moveNorthWest(MarsHabitat, HabitabilityMeter): void
+  + moveSouthEast(MarsHabitat, HabitabilityMeter): void
+   x: int
+   y: int
+   prevX: int
+   mapSymbol: char
+   prevY: int
+}
+class PlainRock {
+  + PlainRock(String, int, int): 
+  + toString(): String
+   symbol: char
+}
+class PlantType {
+  + PlantType(String, int, int): 
+  + interact(Entity): void
+  + toString(): String
+   symbol: char
+}
+class Rocks {
+  + Rocks(String, int, int): 
+}
+class ScannerSingleton {
+  - ScannerSingleton(): 
+  - scannerInstance: Scanner
+  + closeScannerInstance(): void
+   scannerInstance: Scanner
+}
+class SpaceRobot {
+  + SpaceRobot(int, int, int, int): 
+  - prevY: int
+  - prevX: int
+  - recentlyCollided: boolean
+  + moveEast(MarsHabitat, HabitabilityMeter): void
+  + moveNorthWest(MarsHabitat, HabitabilityMeter): void
+  + onCollide(Entity, MarsHabitat, HabitabilityMeter): void
+  - handleMovement(int, int, MarsHabitat, HabitabilityMeter): void
+  + moveWest(MarsHabitat, HabitabilityMeter): void
+  + handleCattlePlacement(MarsHabitat, HabitabilityMeter): boolean
+  - handleVegetationInteraction(Vegetation, HabitabilityMeter): void
+  + toString(): String
+  + isMoveValid(int, int): boolean
+  - handleCattleInteraction(Cattle, HabitabilityMeter): void
+  + moveNorth(MarsHabitat, HabitabilityMeter): void
+  + moveNorthEast(MarsHabitat, HabitabilityMeter): void
+  + moveSouthWest(MarsHabitat, HabitabilityMeter): void
+  - handleDogInteraction(Dog): void
+  + moveSouthEast(MarsHabitat, HabitabilityMeter): void
+  + isCollisionAtPosition(int, int, MarsHabitat, HabitabilityMeter): boolean
+  + moveSouth(MarsHabitat, HabitabilityMeter): void
+  + handleVegetationPlanting(MarsHabitat, HabitabilityMeter): boolean
+   symbol: char
+   prevX: int
+   recentlyCollided: boolean
+   mapSymbol: char
+   prevY: int
+}
+class SpaceRover {
+  + SpaceRover(int, int, int, int): 
+  - recentlyCollided: boolean
+  - prevX: int
+  - prevY: int
+  + moveWest(MarsHabitat, HabitabilityMeter): void
+  + moveSouthEast(MarsHabitat, HabitabilityMeter): void
+  - handleMovement(int, int, MarsHabitat, HabitabilityMeter): void
+  + moveSouth(MarsHabitat, HabitabilityMeter): void
+  + isCollisionAtPosition(int, int, MarsHabitat, HabitabilityMeter): boolean
+  - handleMineralInteraction(Mineral, MarsHabitat, HabitabilityMeter): void
+  + moveNorth(MarsHabitat, HabitabilityMeter): void
+  + moveEast(MarsHabitat, HabitabilityMeter): void
+  + moveNorthWest(MarsHabitat, HabitabilityMeter): void
+  + moveNorthEast(MarsHabitat, HabitabilityMeter): void
+  + isMoveValid(int, int): boolean
+  + toString(): String
+  + moveSouthWest(MarsHabitat, HabitabilityMeter): void
+  - handlePlainRockInteraction(PlainRock, MarsHabitat, HabitabilityMeter): void
+  + onCollide(Entity, MarsHabitat, HabitabilityMeter): void
+   symbol: char
+   prevX: int
+   recentlyCollided: boolean
+   mapSymbol: char
+   prevY: int
+}
+class UnknownEntityException {
+  + UnknownEntityException(String): 
+}
+class VegetableType {
+  + VegetableType(String, int, int): 
+  + interact(Entity): void
+  + toString(): String
+   symbol: char
+}
+class Vegetation {
+  + Vegetation(String, int, int): 
+  - nutrition: int
+  + interact(Entity): void
+  + toString(): String
+   nutrition: int
+}
+
+Cattle                  -[#000082,plain]-^  EarthAnimal            
+Dog                     -[#008200,dashed]-^  Attackable             
+Dog                     -[#000082,plain]-^  EarthAnimal            
+Dog                     -[#008200,dashed]-^  Feedable               
+EarthAnimal             -[#000082,plain]-^  Entity                 
+FileHandler             -[#595959,dashed]->  InvalidFileException   : "«create»"
+FileHandler             -[#595959,dashed]->  UnknownEntityException : "«create»"
+Heebie                  -[#008200,dashed]-^  Attackable             
+Heebie                  -[#008200,dashed]-^  Collidable             
+Heebie                  -[#008200,dashed]-^  Feedable               
+Heebie                  -[#000082,plain]-^  MartianAnimal          
+Heebie                  -[#008200,dashed]-^  Movable                
+Jeebie                  -[#008200,dashed]-^  Attackable             
+Jeebie                  -[#008200,dashed]-^  Collidable             
+Jeebie                  -[#008200,dashed]-^  Feedable               
+Jeebie                  -[#000082,plain]-^  MartianAnimal          
+Jeebie                  -[#008200,dashed]-^  Movable                
+MainMenu               "1" *-[#595959,plain]-> "fileHandler\n1" FileHandler            
+MainMenu                -[#595959,dashed]->  FileHandler            : "«create»"
+MainMenu               "1" *-[#595959,plain]-> "meter\n1" HabitabilityMeter      
+MainMenu                -[#595959,dashed]->  HabitabilityMeter      : "«create»"
+MainMenu                -[#595959,dashed]->  MarsHabitat            : "«create»"
+MainMenu               "1" *-[#595959,plain]-> "habitat\n1" MarsHabitat            
+MarsHabitat             -[#595959,dashed]->  Cattle                 : "«create»"
+MarsHabitat             -[#595959,dashed]->  Dog                    : "«create»"
+MarsHabitat            "1" *-[#595959,plain]-> "entity\n*" Entity                 
+MarsHabitat             -[#595959,dashed]->  Heebie                 : "«create»"
+MarsHabitat             -[#595959,dashed]->  Jeebie                 : "«create»"
+MarsHabitat             -[#595959,dashed]->  Mineral                : "«create»"
+MarsHabitat             -[#595959,dashed]->  PlainRock              : "«create»"
+MarsHabitat             -[#595959,dashed]->  PlantType              : "«create»"
+MarsHabitat             -[#595959,dashed]->  SpaceRobot             : "«create»"
+MarsHabitat             -[#595959,dashed]->  SpaceRover             : "«create»"
+MarsHabitat             -[#595959,dashed]->  VegetableType          : "«create»"
+MarsHabitatApplication "1" *-[#595959,plain]-> "menu\n1" MainMenu               
+MarsHabitatApplication  -[#595959,dashed]->  MainMenu               : "«create»"
+MartianAnimal           -[#000082,plain]-^  Entity                 
+Mineral                 -[#000082,plain]-^  Rocks                  
+PlainRock               -[#000082,plain]-^  Rocks                  
+PlantType               -[#000082,plain]-^  Vegetation             
+Rocks                   -[#000082,plain]-^  Entity                 
+SpaceRobot              -[#008200,dashed]-^  Collidable             
+SpaceRobot              -[#000082,plain]-^  Entity                 
+SpaceRobot              -[#008200,dashed]-^  Movable                
+SpaceRover              -[#008200,dashed]-^  Collidable             
+SpaceRover              -[#000082,plain]-^  Entity                 
+SpaceRover              -[#008200,dashed]-^  Movable                
+VegetableType           -[#000082,plain]-^  Vegetation             
+Vegetation              -[#000082,plain]-^  Entity                 
+@enduml

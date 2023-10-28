@@ -18,6 +18,12 @@ public class PlantType extends Vegetation {
     private static final Set<String> PLANTS_ALLOWED = new HashSet<>(Arrays.asList("ROSE","LILY","EUCALYPTUS"));
 
     //constructor
+    /**
+     * Create PlantType object with name type and coordinate
+     * @param name name type string
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public PlantType(String name, int x, int y) {
         super(name, x, y);
         if (!PLANTS_ALLOWED.contains(name)){
@@ -26,18 +32,30 @@ public class PlantType extends Vegetation {
     }
 
     //other methods
+    /**
+     * PlantType interaction with other entities
+     * @param entity entity interacted with
+     */
     @Override
     public void interact(Entity entity) {
         if (entity instanceof SpaceRobot) {
-            //water it
+            //watered by SpaceRobot
         }
     }
 
+    /**
+     * Print PlantType name and its coordinate in habitat
+     * @return PlantType information in string
+     */
     @Override
     public String toString() {
         return name + " at position (" + getY() + ", " + getX() + ")";
     }
 
+    /**
+     * Retrieve PlantType char representation
+     * @return PlantType char representation
+     */
     public char getSymbol(){
         char firstChar = 0;
         return name.charAt(firstChar);

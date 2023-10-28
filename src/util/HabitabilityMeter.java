@@ -9,12 +9,9 @@
 
 package util;
 
-import entities.Entity;
-import entities.Dog;
-import entities.Cattle;
-import entities.Vegetation;
-import entities.PlainRock;
-import entities.Mineral;
+import entities.*;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +24,18 @@ public class HabitabilityMeter {
     // Map to hold the entity representation and its corresponding name
     private static final Map<String, Integer> SCORE_MAP = new HashMap<>();
     // Map to hold current entity count
-    private static Map<String, Integer> entityCount;
+    private Map<String, Integer> entityCount;
     private int habitabilityScore;
 
     //constructor
+
+    /**
+     * Constructor of HabitabilityMeter object
+     * Initialise Hash Map for entity char to entity string name map
+     * Initialise Hash Map for entity string name to entity score map
+     * Create a new entityCount map for printing purposes
+     * Set habitability score to zero
+     */
     public HabitabilityMeter(){
         int initialHabitatScore = 0;
         int vegetationScore = 2;
@@ -74,16 +79,28 @@ public class HabitabilityMeter {
     }
 
     //setter
+    /**
+     * Set habitability score of a habitat
+     * @param habitabilityScore score of a Mars habitat
+     */
     public void setHabitabilityScore(int habitabilityScore) {
         this.habitabilityScore = habitabilityScore;
     }
 
     //getter
+    /**
+     * Retrieve habitability score of a habitat
+     * @return score of a Mars habitat
+     */
     public int getHabitabilityScore() {
         return habitabilityScore;
     }
 
-    public static Map<String, Integer> getEntityCount() {
+    /**
+     * Retrieve entityCount map that stores entity with its count mapping
+     * @return entity with its count Hash map
+     */
+    public Map<String, Integer> getEntityCount() {
         return entityCount;
     }
 
@@ -193,6 +210,7 @@ public class HabitabilityMeter {
     public boolean increaseHabitabilityEvent(Entity event) {
         int notMineralIncrement = 1;
         int isMineralIncrement = 2;
+        int eliminateHostileIncrement = 7;
 
         if (event instanceof Vegetation) {
             habitabilityScore += notMineralIncrement;
@@ -202,7 +220,9 @@ public class HabitabilityMeter {
             habitabilityScore += isMineralIncrement;
         } else if (event instanceof PlainRock){
             habitabilityScore += notMineralIncrement;
-        }else {
+        } else if (event instanceof MartianAnimal){
+            habitabilityScore += eliminateHostileIncrement;
+        } else {
             System.out.println("Invalid command");
             return true;
         }
@@ -236,33 +256,26 @@ public class HabitabilityMeter {
     //remove entity from entityCount map
     /**
      * get entity and decrement its count
-     * @param entity
-     * @return entity count after decrement if count greater than 0
+     * @param entity target entity
      */
-    public int decrementEntityCount(Entity entity) {
-        int zeroEntityCounted = 0;
+    public void decrementEntityCount(Entity entity) {
+        int zeroEntityCount = 0;
         char entitySymbol = entity.getSymbol();
         String entityName = ENTITY_MAP.get(entitySymbol);
 
         if (entityName == null) {
-            return -1;
+            return;
         }
 
         if (entityCount.containsKey(entityName)) {
             int currentCount = entityCount.get(entityName);
-            if (currentCount > zeroEntityCounted) {
+            if (currentCount > zeroEntityCount) {
                 currentCount--;
             } else {
-                currentCount = zeroEntityCounted;
+                entityCount.remove(entityName);
             }
             entityCount.put(entityName, currentCount);
-            return currentCount;
         }
-        return -1;
-    }
-
-    public void appendToHabitabilityLog(List<String> map){
-        //to implement
     }
 }
 

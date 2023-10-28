@@ -9,6 +9,11 @@ package util;
 public class InvalidFileException extends Exception{
 
     //constructor
+
+    /**
+     * Custom exception creation intended for invalid file formatting
+     * @param message custom message
+     */
     public InvalidFileException(String message) {
         super(message);
     }

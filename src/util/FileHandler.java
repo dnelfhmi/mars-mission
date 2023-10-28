@@ -8,36 +8,45 @@
 
 package util;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.File;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class FileHandler {
 
     //instance fields
     private static final String DEFAULT_MAP_FILE = "resources/default.in";
+    private static final String LOG_FILE = "resources/habitability.log";
     //setting set of a valid symbol in the maps.
     private Set<Character> validSymbols = new HashSet<>(Arrays.asList('#','.','Z','X','H','J','P','T','R','L','O','A','B','E','C','G','S','D','@','*'));
     private List<String> dataLines = new ArrayList<>();
+    private List<String> logDataLines = new ArrayList<>();
     private File file;
+    private File logFile;
 
     //constructor
+    /**
+     * Create FileHandler object with default map file set as filepath
+     */
     public FileHandler(){
         this.file = new File(DEFAULT_MAP_FILE);
+        this.logFile = new File(LOG_FILE);
     }
 
+    /**
+     * Create FileHandler object with given filepath in fileName argument
+     * @param fileName target filepath
+     */
     public FileHandler(String fileName){
         this.file = new File(fileName);
+        this.logFile = new File(LOG_FILE);
     }
 
     //getter
+
+    /**
+     * Retrieve list of string where each string represent each row of a file content
+     * @return list of string in the file
+     */
     public List<String> getDataLines() {
         return dataLines;
     }
@@ -98,8 +107,93 @@ public class FileHandler {
         }
     }
 
-    //validating file method
+    //appending and reading log file method
+    /**
+     * Append the habitability log with the current habitability status
+     * @param meter habitability meter
+     */
+    public void appendToHabitabilityLog(HabitabilityMeter meter, int currentRun) throws IOException {
+        Map<String,Integer> entityCount = meter.getEntityCount();
+        if (!logFile.exists()) {
+            if (!logFile.createNewFile()) {
+                throw new IOException("Cannot create file for Habitability Status Log. ");
+            }
+        }
 
+        try (FileWriter writer = new FileWriter(logFile, true);
+             BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+
+            bufferedWriter.write("Program Run :" + currentRun);
+            bufferedWriter.newLine();
+            bufferedWriter.write("Habitability Status");
+            bufferedWriter.newLine();
+            bufferedWriter.write("======================");
+            bufferedWriter.newLine();
+
+            for (Map.Entry<String, Integer> entry : entityCount.entrySet()) {
+                bufferedWriter.write(entry.getKey() + " = " + entry.getValue());
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.write("Total Habitability Score: " + meter.getHabitabilityScore());
+            bufferedWriter.newLine();
+            bufferedWriter.newLine();
+        } catch (IOException e) {
+            throw new IOException("Cannot write Habitability Status Log in a file.", e);
+        }
+    }
+
+    /**
+     * Method to determine the current run number for log file
+     * @return current run number
+     */
+    public int getCurrentRunNumberLog() {
+        if (!logFile.exists()) {
+            return 1;
+        }
+        int runNumber = 0;
+        try (Scanner logScan = new Scanner(logFile)) {
+            while (logScan.hasNextLine()) {
+                String line = logScan.nextLine();
+                if (line.startsWith("Program Run :")) {
+                    runNumber++;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Cannot read Habitability Status Log file.");
+        }
+        return runNumber + 1; // return next run number
+    }
+
+    /**
+     * Method for loading log file and return it as list of string
+     * @return log file list of string
+     */
+    protected List<String> loadLogFile(){
+        try{
+            Scanner fileScanner = new Scanner(logFile);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                logDataLines.add(line);
+            }
+        } catch (FileNotFoundException e){
+            System.out.println("File Not Found, aborting mission.");
+        }
+        return logDataLines;
+    }
+
+    /**
+     * Method for printing log file
+     */
+    protected void displayLogFile() {
+        List<String> logDataLines = loadLogFile();
+        for (String line : logDataLines) {
+            System.out.println(line);
+        }
+        System.out.println("");
+    }
+
+    //validating file method
     /**
      * validate a single line of the loaded file.
      * @param line

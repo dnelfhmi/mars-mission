@@ -9,6 +9,11 @@ package util;
 public class UnknownEntityException extends Exception{
 
     //constructor
+
+    /**
+     * Custom exception creation intended for file that has unknown entity in its content
+     * @param message custom message
+     */
     public UnknownEntityException(String message) {
         super(message);
     }

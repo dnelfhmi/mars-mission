@@ -15,6 +15,7 @@ package util;
 
 public interface Attackable {
     int getHealth();
+    int getAttackPower();
     void decreaseHealth(int amount);
 
 }

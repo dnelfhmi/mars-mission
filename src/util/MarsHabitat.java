@@ -20,26 +20,36 @@ public class MarsHabitat {
     private char[][] marsMap;
 
     //constructor
+    /**
+     * Create a MarsHabitat object with a new entity list instantiated indicating entities in the habitat.
+     */
     public MarsHabitat() {
         this.entity = new ArrayList<Entity>();
     }
 
     //getter
+    /**
+     * Retrieve 2-dimensional char array representation of the habitat
+     * @return 2-dimensional char array of the map
+     */
     public char[][] getMarsMap() {
         return marsMap;
     }
 
+    /**
+     * Retrieve entities residing in the habitat
+     * @return entity list
+     */
     public List<Entity> getEntity() {
         return entity;
     }
 
     //main method for processing map
-
     /**
      * Main method for processing map passed by fileHandler
      * Invoke method for displaying map, converting list of string to 2-dimensional char array
      * And parsing the map
-     * @param fileHandler
+     * @param fileHandler file loaded to the habitat
      */
     protected void processMap(FileHandler fileHandler){
         try{
@@ -61,7 +71,7 @@ public class MarsHabitat {
 
     /**
      * Method for displaying map by taking list of string (dataLines)
-     * @param fileHandler
+     * @param fileHandler file loaded to the habitat
      * @throws FileNotFoundException If no file existed/found
      * @throws InvalidFileException If invalid map formatting in file content
      * @throws UnknownEntityException If unknown entity present in file content
@@ -89,7 +99,7 @@ public class MarsHabitat {
 
     /**
      * Convert map layout from list of string to 2-dimensional char array
-     * @param dataLines
+     * @param dataLines lines of string from a file
      */
     protected void convertToChar(List<String> dataLines) {
         int rows = dataLines.size();
@@ -119,7 +129,7 @@ public class MarsHabitat {
     /**
      * Parse each element/cell in 2-dimensional char array
      * Check and add entities to the entity list
-     * @param fileHandler
+     * @param fileHandler file loaded to the habitat
      */
     protected void parseDataLines(FileHandler fileHandler) { //to add entity from file to entityList
         int mapOffset = 1;
@@ -186,7 +196,7 @@ public class MarsHabitat {
 
     /**
      * Update the current and previous position of a Movable entity
-     * @param entity
+     * @param entity target entity
      */
     public void updateEntityPosition(Movable entity) {
         // Clear the previous position
@@ -217,7 +227,7 @@ public class MarsHabitat {
     /**
      * Generic used to list all the filtered/interested entities for printing entity list during entity selection
      * @param entityType Class Type of interested entity
-     * @param entityName
+     * @param entityName target entity
      * @param <T> Generic Type
      */
     protected <T extends Entity> void listEntity(Class<T> entityType, String entityName) {
@@ -346,7 +356,7 @@ public class MarsHabitat {
             case "DOG":
                 Dog dog = new Dog("DOG",x,y);
                 entity.add(dog);
-                marsMap[dog.getX()][dog.getY()] = 'C';
+                marsMap[dog.getX()][dog.getY()] = dog.getSymbol();
                 break;
             default:
                 System.out.println("Invalid choice.");
@@ -363,7 +373,8 @@ public class MarsHabitat {
             Entity currentEntity = entity.get(i);
 
             if ((currentEntity instanceof Rocks || currentEntity instanceof Vegetation
-                    || currentEntity instanceof Cattle) && currentEntity.getX() == x && currentEntity.getY() == y) {
+                    || currentEntity instanceof Cattle || currentEntity instanceof Dog || currentEntity instanceof MartianAnimal)
+                    && currentEntity.getX() == x && currentEntity.getY() == y) {
                 entity.remove(i);
                 marsMap[x][y] = '.';
                 break;

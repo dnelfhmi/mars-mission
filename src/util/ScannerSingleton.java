@@ -19,9 +19,16 @@ public class ScannerSingleton {
 
     private static Scanner scannerInstance;
 
+    /**
+     * This constructor will not instantiate anything to prevent multiple Scanner object creation.
+     */
     private ScannerSingleton(){
-        }
+    }
 
+    /**
+     * If no scanner object, create one. If scanner exist, use the existing one.
+     * @return existing scanner
+     */
     public static Scanner getScannerInstance(){
         if(scannerInstance == null){
             scannerInstance = new Scanner(System.in);
@@ -29,6 +36,9 @@ public class ScannerSingleton {
         return scannerInstance;
     }
 
+    /**
+     * Close the existing scanner
+     */
     public static void closeScannerInstance(){
         if(scannerInstance != null){
             scannerInstance.close();

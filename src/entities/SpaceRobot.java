@@ -27,7 +27,7 @@ public class SpaceRobot extends Entity implements Movable, Collidable {
 
     //constructor
     /**
-     *
+     * Create SpaceRobot with its previous and current coordinate,map boundary information and collision flag
      * @param x initial x-coordinate of the robot
      * @param y initial y-coordinate of the robot
      * @param mapWidth width of the habitat map
@@ -44,42 +44,78 @@ public class SpaceRobot extends Entity implements Movable, Collidable {
     }
 
     //setter
+    /**
+     * Set previous x-coordinate
+     * @param prevX previous x-coordinate
+     */
     public void setPrevX(int prevX) {
         this.prevX = prevX;
     }
 
+    /**
+     * Set previous y-coordinate
+     * @param prevY previous y-coordinate
+     */
     public void setPrevY(int prevY) {
         this.prevY = prevY;
     }
 
+    /**
+     * Set collision flag
+     * @param recentlyCollided collision flag
+     */
     public void setRecentlyCollided(boolean recentlyCollided) {
         this.recentlyCollided = recentlyCollided;
     }
 
     //getter
+    /**
+     * Retrieve previous x-coordinate
+     * @return previous x-coordinate
+     */
     public int getPrevX() {
         return prevX;
     }
 
+    /**
+     * Retrieve previous y-coordinate
+     * @return previous y-coordinate
+     */
     public int getPrevY() {
         return prevY;
     }
 
+    /**
+     * Retrieve collision flag
+     * @return true if recently collided, false if otherwise
+     */
     public boolean isRecentlyCollided() {
         return recentlyCollided;
     }
 
+    /**
+     * Retrieve char representation
+     * @return char representation
+     */
     @Override
     public char getMapSymbol() {
         return 'Z';
     }
 
+    /**
+     * Retrieve char representation
+     * @return char representation
+     */
     @Override
     public char getSymbol() {
         return 'Z';
     }
 
     //printing entity position
+    /**
+     * Print SpaceRobot coordinate in habitat
+     * @return SpaceRobot information in string
+     */
     @Override
     public String toString() {
         return "Space Robot at position (" + getY() + ", " + getX() + ")";
@@ -275,8 +311,11 @@ public class SpaceRobot extends Entity implements Movable, Collidable {
             handleVegetationInteraction(vegetation,meter);
         } else if (other instanceof Cattle) {
             Cattle animal = (Cattle) other;
-            handleEarthAnimalInteraction(animal,meter);
-        } else {
+            handleCattleInteraction(animal,meter);
+        } else if (other instanceof Dog) {
+            Dog dog = (Dog) other;
+            handleDogInteraction(dog);
+        }else {
             System.out.println("You cannot move to this location.");
         }
     }
@@ -311,7 +350,7 @@ public class SpaceRobot extends Entity implements Movable, Collidable {
      * @param animal The Cattle object that was collided with.
      * @param meter The HabitabilityMeter object to track habitability changes.
      */
-    private void handleEarthAnimalInteraction(Cattle animal, HabitabilityMeter meter) {
+    private void handleCattleInteraction(Cattle animal, HabitabilityMeter meter) {
         boolean feedCattleLoop = true;
         while(feedCattleLoop) {
             System.out.println("Do you want to feed the cattle?Enter Y for yes, N for No ");
@@ -322,6 +361,24 @@ public class SpaceRobot extends Entity implements Movable, Collidable {
                 System.out.println("You have fed the cattle. It will grow");
             } else if (choice.equals("N")) {
                 System.out.println("You do nothing to the cattle");
+            } else {
+                System.out.println("Invalid Command");
+            }
+        }
+    }
+
+    private void handleDogInteraction(Dog dog){
+        int dogFoodNutrition = 1;
+        while(true) {
+            System.out.println("Do you want to feed the dog?Enter Y for yes, N for No ");
+            String choice = scanner.nextLine();
+            if (choice.equals("Y")) {
+                dog.increaseHealth(dogFoodNutrition);
+                System.out.println("You have fed the dog. It smiles to you.");
+                return;
+            } else if (choice.equals("N")) {
+                System.out.println("You do nothing to the dog. Poor dog.");
+                return;
             } else {
                 System.out.println("Invalid Command");
             }
@@ -419,12 +476,12 @@ public class SpaceRobot extends Entity implements Movable, Collidable {
             case 3:
                 habitat.cattleOnMap("COW", getX(), getY()-leftPositionAdjustment);
                 meter.increaseHabitability("COW");
-                System.out.println("An Cow has been planted.");
+                System.out.println("An Cow has been added.");
                 break;
             case 4:
                 habitat.cattleOnMap("DOG", getX(), getY()-leftPositionAdjustment);
                 meter.increaseHabitability("DOG");
-                System.out.println("An Dog tree has been planted.");
+                System.out.println("An Dog has been added.");
                 break;
             default:
                 System.out.println("Invalid choice.");

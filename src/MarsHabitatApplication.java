@@ -6,19 +6,25 @@
 import util.MainMenu;
 import util.ScannerSingleton;
 import java.util.Scanner;
-import java.io.FileNotFoundException;
 
 public class MarsHabitatApplication {
     public static Scanner keyboard;
     private static MainMenu menu;
 
-    //constructor instantiate scanner object
+    //constructor
+    /**
+     * Create MarsHabitatApplication with SingletonScanner and MainMenu instantiated
+     */
     public MarsHabitatApplication() {
         keyboard = ScannerSingleton.getScannerInstance();
         menu = new MainMenu();
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    /**
+     * Entry point of the program.
+     * @param args list of string arguments
+     */
+    public static void main(String[] args){
 
         MarsHabitatApplication engine = new MarsHabitatApplication();
         engine.startProgram(args);
@@ -26,7 +32,7 @@ public class MarsHabitatApplication {
     }
 
     /**
-     * This method prints the starting welcome message. Do not change this code
+     * This method prints the starting welcome message. Do not change this code (okay)
      */
     private void displayMessage() {
         System.out.println("         __\n" +
@@ -52,6 +58,11 @@ public class MarsHabitatApplication {
     }
 
     //control flow for menu display and selection
+    /**
+     * Start program by redirecting program based on loading file method
+     * Accept list of arguments for loading file through terminal
+     * @param args list of string arguments
+     */
     private void startProgram(String[] args) {
         boolean loop = true;
         int argsLength = 2;

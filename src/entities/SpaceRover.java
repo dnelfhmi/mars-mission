@@ -24,9 +24,9 @@ public class SpaceRover extends Entity implements Movable, Collidable {
 
     //constructor
     /**
-     *
-     * @param x initial x-coordinate of the rover
-     * @param y initial y-coordinate of the rover
+     * Create SpaceRover with its previous and current coordinate,map boundary information and collision flag
+     * @param x initial x-coordinate of the robot
+     * @param y initial y-coordinate of the robot
      * @param mapWidth width of the habitat map
      * @param mapHeight height of the habitat map
      */
@@ -41,45 +41,81 @@ public class SpaceRover extends Entity implements Movable, Collidable {
     }
 
     //setter
+    /**
+     * Set previous x-coordinate
+     * @param prevX previous x-coordinate
+     */
     public void setPrevX(int prevX) {
         this.prevX = prevX;
     }
 
+    /**
+     * Set previous y-coordinate
+     * @param prevY previous y-coordinate
+     */
     public void setPrevY(int prevY) {
         this.prevY = prevY;
     }
 
+    /**
+     * Set collision flag
+     * @param recentlyCollided collision flag
+     */
     public void setRecentlyCollided(boolean recentlyCollided) {
         this.recentlyCollided = recentlyCollided;
     }
 
     //getter
+    /**
+     * Retrieve previous x-coordinate
+     * @return previous x-coordinate
+     */
     public int getPrevX() {
         return prevX;
     }
 
+    /**
+     * Retrieve previous y-coordinate
+     * @return previous y-coordinate
+     */
     public int getPrevY() {
         return prevY;
     }
 
+    /**
+     * Retrieve collision flag
+     * @return true if recently collided, false if otherwise
+     */
     public boolean isRecentlyCollided() {
         return recentlyCollided;
     }
 
+    /**
+     * Retrieve char representation
+     * @return char representation
+     */
     @Override
     public char getMapSymbol() {
         return 'X';
     }
 
-    //printing entity position
-    @Override
-    public String toString() {
-        return "Space Rover at position (" + getY() + ", " + getX() + ")";
-    }
-
+    /**
+     * Retrieve char representation
+     * @return char representation
+     */
     @Override
     public char getSymbol() {
         return 'X';
+    }
+
+    //printing entity position
+    /**
+     * Print SpaceRover coordinate in habitat
+     * @return SpaceRover information in string
+     */
+    @Override
+    public String toString() {
+        return "Space Rover at position (" + getY() + ", " + getX() + ")";
     }
 
     //movement logic
@@ -243,7 +279,7 @@ public class SpaceRover extends Entity implements Movable, Collidable {
     public boolean isCollisionAtPosition(int newX, int newY, MarsHabitat habitat, HabitabilityMeter meter) {
         Entity entityAtNewPosition = habitat.getEntityAtPosition(newX, newY);
         if (entityAtNewPosition != null) {
-            System.out.println("Colliding with " + entityAtNewPosition);
+            //System.out.println("Colliding with " + entityAtNewPosition);
             this.onCollide(entityAtNewPosition,habitat,meter);
             recentlyCollided = true;
             return true;
