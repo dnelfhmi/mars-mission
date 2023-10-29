@@ -67,9 +67,13 @@ public class MainMenu {
      * @param args filename
      */
     public void handleArgumentInput(String[] args){
-        fileHandler = new FileHandler(args[1]);
+        fileHandler = new FileHandler(args);
         habitat.processMap(fileHandler);
         displayHabitatScore();
+    }
+
+    public void handleArgumentLog(){
+        fileHandler.loadLogFile();
     }
 
     //method for exiting the program.

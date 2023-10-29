@@ -15,7 +15,7 @@ public class FileHandler {
 
     //instance fields
     private static final String DEFAULT_MAP_FILE = "resources/default.in";
-    private static final String LOG_FILE = "resources/habitability.log";
+    private static final String DEFAULT_LOG_FILE = "resources/habitability.log";
     //setting set of a valid symbol in the maps.
     private Set<Character> validSymbols = new HashSet<>(Arrays.asList('#','.','Z','X','H','J','P','T','R','L','O','A','B','E','C','G','S','D','@','*'));
     private List<String> dataLines = new ArrayList<>();
@@ -29,16 +29,32 @@ public class FileHandler {
      */
     public FileHandler(){
         this.file = new File(DEFAULT_MAP_FILE);
-        this.logFile = new File(LOG_FILE);
+        this.logFile = new File(DEFAULT_LOG_FILE);
     }
 
     /**
-     * Create FileHandler object with given filepath in fileName argument
+     * Create FileHandler object with given filepath in fileName string argument
+     * @param fileName target filepath string array
+     */
+    public FileHandler(String[] fileName){
+        int argsLength = 2;
+        int mapFileArgs = 1;
+        int logFileArgs = 3;
+        this.file = new File(fileName[mapFileArgs]);
+        if (fileName.length > argsLength){
+            this.logFile = new File(fileName[logFileArgs]);
+        } else {
+            this.logFile = new File(DEFAULT_LOG_FILE);
+        }
+    }
+
+    /**
+     * Create FileHandler object with given filepath in fileName string
      * @param fileName target filepath
      */
     public FileHandler(String fileName){
         this.file = new File(fileName);
-        this.logFile = new File(LOG_FILE);
+        this.logFile = new File(DEFAULT_LOG_FILE);
     }
 
     //getter
@@ -116,10 +132,9 @@ public class FileHandler {
         Map<String,Integer> entityCount = meter.getEntityCount();
         if (!logFile.exists()) {
             if (!logFile.createNewFile()) {
-                throw new IOException("Cannot create file for Habitability Status Log. ");
+                throw new IOException("Cannot create file for Habitability Status Log.");
             }
         }
-
         try (FileWriter writer = new FileWriter(logFile, true);
              BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
 
@@ -171,13 +186,18 @@ public class FileHandler {
      */
     protected List<String> loadLogFile(){
         try{
+            if (!logFile.exists()) {
+                if (!logFile.createNewFile()) {
+                    throw new IOException("Cannot create file for Habitability Status Log. ");
+                }
+            }
             Scanner fileScanner = new Scanner(logFile);
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 logDataLines.add(line);
             }
-        } catch (FileNotFoundException e){
-            System.out.println("File Not Found, aborting mission.");
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot create file for Habitability Status Log.");
         }
         return logDataLines;
     }

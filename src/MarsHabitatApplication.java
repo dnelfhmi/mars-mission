@@ -66,10 +66,14 @@ public class MarsHabitatApplication {
     private void startProgram(String[] args) {
         boolean loop = true;
         int argsLength = 2;
-        int firstArgs = 0;
+        int mapFileFlag = 0;
+        int logFileFlag = 2;
         displayMessage();
-        if (args.length == argsLength && "--f".equals(args[firstArgs])) {
+        if (args.length >= argsLength && "--f".equals(args[mapFileFlag])) {
             menu.handleArgumentInput(args);
+            if(args.length > argsLength && "--l".equals(args[logFileFlag])){
+                menu.handleArgumentLog();
+            }
         } else {
             menu.displayLoadMenu();
             menu.handleUserLoadFileInput();
